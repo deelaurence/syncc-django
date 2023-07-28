@@ -1,0 +1,167 @@
+{%extends 'main.html'%} {%block content%} {% load static %}
+
+<div id="participantsList" class="text-light pt-4">
+  {% for participant in participants %}
+
+  <p class="inline-block max-w-content">{{participant.name}},</p>
+
+  {% endfor %}
+</div>
+<span class="text-light"> commented on this post</span>
+<div>
+  {% if request.user.is_authenticated %}
+  <form
+    action=" "
+    class="flex gap-2 bg-dark py-2 my-4 items-center justify-between"
+    method="post"
+  >
+    {% csrf_token %}
+
+    <input
+      placeholder="Say something?"
+      class="bg-transparent comment-field border-b-[1px] focus:outline-none"
+      type="text"
+      autocomplete="off"
+      name="body"
+      id=""
+    />
+    <input type="submit" value="Submit" />
+  </form>
+  {% endif %}
+</div>
+<!-- here -->
+<div class="post-container flex gap-2 mt-8 border-[1px] mb-6 w-full">
+  <section
+    class="border-2 border-white h-[32px] w-[32px] mt-2 overflow-hidden rounded-full"
+  >
+    <img
+      class="h-full w-full object-cover"
+      src="{{room.host.avatar.url}}"
+      alt=""
+    />
+  </section>
+  <section class="flex flex-col gap-2 w-[95%]">
+    <h5 class="flex items-center gap-2">
+      <span
+        ><a
+          class="capitalize font-semibold"
+          href="{% url 'profile' room.host.id %}"
+        >
+          {{room.host.name}}</a
+        ></span
+      >
+      <span class="text-light font-mono text-sm pl-2"
+        >@{{room.host.username}}
+      </span>
+      <span class="bg-light inline-block h-1 w-1 rounded-full"></span>
+      <span class="text-light text-xs time-since">
+        {{room.created|timesince}}
+      </span>
+    </h5>
+    <a href="{% url 'room' room.id %}">{{room.name}}</a>
+    <p class="text-light room-description self-start w-[95%]">
+      {{room.description}}
+      <a
+        class="text-blue-400 show-more"
+        href="{% url 'profile' room.host.id %}"
+      ></a>
+    </p>
+    <div class="flex items-center justify-between pr-4 mb-2 gap-4">
+      <p
+        class="text-blue-200 py-1 px-4 capitalize bg-dark rounded-[50px] w-max"
+      >
+        {{room.topic.name}}
+      </p>
+      <div class="flex gap-4 opacity-75 mr-6"></div>
+    </div>
+  </section>
+</div>
+<!-- here -->
+
+{% if messages|length == 0 %}
+<p onclick="scrollAndFocus()" class="text-xl text-light comment-prompt pb-24">
+  Be the first to comment
+</p>
+{% else %}
+<div>
+  <h3>Comments</h3>
+  {% for message in messages %}
+
+  <div>
+    <hr class="bg-gray-700 border-[1px] my-4 border-gray-800" />
+    <div class="flex flex-row gap-2">
+      <section
+        class="border-2 border-white h-[32px] w-[32px] mt-2 overflow-hidden rounded-full"
+      >
+        <img
+          class="h-full w-full object-cover"
+          src="{{room.host.avatar.url}}"
+          alt=""
+        />
+      </section>
+
+      <div>
+        <p>{{message.body}}</p>
+        <small class="text-light font-mono"
+          >@{{message.user.username}}
+          <span class="time-since text-light">
+            {{message.created|timesince}}
+          </span></small
+        >
+        {% if request.user == message.user %}
+        <a
+          class="py-4 block text-red-400"
+          href="{% url 'delete-message' message.id %}"
+          >Delete Comment</a
+        >
+      </div>
+      {% endif %}
+    </div>
+  </div>
+
+  {% endfor %}
+</div>
+{% endif %}
+<!-- here -->
+<!-- here -->
+<script>
+  function scrollAndFocus() {
+    const postContainer = document.querySelector(".post-container");
+    const commentField = document.querySelector(".comment-field");
+    postContainer.style.border = "none";
+    commentField.style.outline = "1px solid orange";
+    commentField.scrollIntoView({
+      behavior: "smooth",
+      block: "center",
+      inline: "nearest",
+    });
+    commentField.focus();
+  }
+
+  let timeStamp = document.querySelectorAll(".time-since");
+  timeStamp.forEach((element) => {
+    let time = element.textContent.trim().split(",")[0];
+    let number = parseInt(time);
+    let string = time.replace(/\d+/g, "").trim().substring(0, 1);
+    editedTime = number + string;
+    element.textContent = editedTime;
+  });
+
+  const participantsList = document.getElementById("participantsList");
+  const participantElements = participantsList.getElementsByTagName("p");
+  const maxVisibleParticipants = 2;
+
+  if (participantElements.length > maxVisibleParticipants) {
+    for (let i = maxVisibleParticipants; i < participantElements.length; i++) {
+      participantElements[i].style.display = "none";
+    }
+
+    const numHiddenParticipants =
+      participantElements.length - maxVisibleParticipants;
+    const moreParticipantsText = document.createTextNode(
+      ` and ${numHiddenParticipants} more`
+    );
+    participantsList.appendChild(moreParticipantsText);
+  }
+</script>
+{% endblock %}

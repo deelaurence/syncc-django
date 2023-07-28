@@ -1,0 +1,134 @@
+<div class="w-[95vw]">
+  {% load static %}
+  <div class="mb-32">
+    {% for room in rooms %}
+    <hr class="opacity-25 h-[1px] my-4 bg-light" />
+    <div class="flex gap-2 mt-4 w-full">
+      <section
+        class="border-2 border-white h-[32px] w-[32px] mt-2 overflow-hidden rounded-full"
+      >
+        <img
+          class="h-full w-full object-cover"
+          src="{{room.host.avatar.url}}"
+          alt=""
+        />
+      </section>
+      <section class="flex flex-col gap-2 w-[95%]">
+        <h5 class="flex items-center gap-2">
+          <span
+            ><a
+              class="capitalize font-semibold"
+              href="{% url 'profile' room.host.id %}"
+            >
+              {{room.host.name}}</a
+            ></span
+          >
+          <span class="text-light font-mono text-sm pl-2"
+            >@{{room.host.username}}
+          </span>
+          <span class="bg-light inline-block h-1 w-1 rounded-full"></span>
+          <span class="text-light text-xs time-since">
+            {{room.created|timesince}}
+          </span>
+        </h5>
+        <a href="{% url 'room' room.id %}">{{room.name}}</a>
+        <a
+          href="{% url 'room' room.id %}"
+          class="text-light room-description self-start w-[95%]"
+        >
+          {{room.description}}
+          <a
+            class="text-blue-400 show-more"
+            href="{% url 'room' room.id %}"
+          ></a>
+        </a>
+        <div class="flex items-center justify-between pr-4 mb-2 gap-4">
+          <a
+            href="{% url 'home' %}?q={{room.topic.name}}"
+            class="text-blue-200 py-1 px-4 capitalize bg-dark rounded-[50px] w-max"
+          >
+            {{room.topic.name}}
+          </a>
+
+          <div class="flex gap-4 opacity-75 mr-6">
+            {% if request.user == room.host %}
+            <a href="{% url 'update-room' room.id %}"
+              ><img
+                class="h-4 invert"
+                src="{% static 'images/edit-button.png' %}"
+                alt=""
+                srcset=""
+              />
+            </a>
+            <a href="{% url 'delete-room' room.id %}">
+              <img
+                class="h-4 invert"
+                src="{% static 'images/delete.png' %}"
+                alt=""
+                srcset=""
+              />
+            </a>
+            {% endif %}
+          </div>
+        </div>
+      </section>
+    </div>
+    <section class="flex justify-around">
+      <div class="flex gap-2 text-light items-center">
+        <img
+          class="h-4 invert"
+          src="{% static 'images/heart.png' %}"
+          alt=""
+          srcset=""
+        />
+        <p>12</p>
+      </div>
+      <div class="flex gap-2 text-light items-center">
+        <img
+          class="h-4 invert"
+          src="{% static 'images/comment.png' %}"
+          alt=""
+          srcset=""
+        />
+        <p>14</p>
+      </div>
+      <div class="flex gap-2 text-light items-center">
+        <img
+          class="h-6 invert"
+          src="{% static 'images/impression.png' %}"
+          alt=""
+          srcset=""
+        />
+        <p>1.3k</p>
+      </div>
+    </section>
+    {%endfor%}
+  </div>
+  <script>
+    let timeStamp = document.querySelectorAll(".time-since");
+    timeStamp.forEach((element) => {
+      let time = element.textContent.trim().split(",")[0];
+      let number = parseInt(time);
+      let string = time.replace(/\d+/g, "").trim().substring(0, 1);
+      editedTime = number + string;
+      element.textContent = editedTime;
+    });
+
+    let roomDescription = document.querySelectorAll(".room-description");
+    let showMore = document.querySelectorAll(".show-more");
+    roomDescription.forEach((element, index) => {
+      let description = element.textContent;
+      let length = description.length;
+      if (length > 150) {
+        console.log("large");
+        showMore.forEach((element2, index2) => {
+          if (index == index2) {
+            element2.textContent = "Show more";
+            console.log(element, element2);
+          }
+        });
+        element.firstChild.textContent = description.substring(0, 100) + "...";
+      }
+    });
+  </script>
+</div>

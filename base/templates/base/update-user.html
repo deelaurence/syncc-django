@@ -1,0 +1,79 @@
+<html lang="en">
+  <head>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'styles/output.css' %}" />
+    <link rel="stylesheet" href="{% static 'styles/custom.css' %}" />
+
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body class="bg-darkest text-white px-6">
+    <h3 class="font-semibold my-4 text-center text-2xl">Edit Profile</h3>
+    <div>
+      <div class="h-[200px] mb-12 relative overflow-hidden">
+        <img class="w-full mb-24" src="{{request.user.avatar.url}}" alt="" />
+      </div>
+      <form
+        class="update-user"
+        method="POST"
+        action=""
+        enctype="multipart/form-data"
+      >
+        {% csrf_token %} {% for field in form %}
+
+        <p>{{field.label}}*</p>
+
+        <div>{{field}}</div>
+
+        {% endfor %}
+        <a
+          class="bg-blue-500 h-16 w-16 absolute add-image rounded-full"
+          href="{% url 'create-room' %}"
+          ><img
+            class="h-1/3 absolute top-1/2 left-1/2 -translate-x-1/2 invert -translate-y-1/2"
+            src="{% static 'images/plus.png' %}"
+            alt=""
+          />
+        </a>
+        <input
+          class="-mt-32 px-3 py-1 rounded-2xl border-2"
+          type="submit"
+          value="SUBMIT"
+        />
+      </form>
+    </div>
+    <script>
+      const imageInput = document.querySelector("#id_avatar");
+      const dp = document.querySelector("img");
+      imageInput.addEventListener("change", () => {
+        const image = imageInput.files[0];
+        if (image) {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            dp.src = e.target.result;
+            console.log(dp);
+          };
+          reader.readAsDataURL(image);
+        }
+      });
+
+      const hideText = (textToHide, queryStr) => {
+        let divs = document.querySelectorAll(queryStr);
+        divs.forEach((element) => {
+          if (element.textContent.includes(textToHide)) {
+            element.style.opacity = "0";
+            console.log(element);
+          }
+        });
+      };
+      hideText("Currently", ".update-user div");
+      hideText("Avatar", ".update-user p");
+      const bio = document.querySelector("#id_bio");
+      const usernameUpdate = document.querySelector("#id_username");
+
+      bio.placeholder = "Tell us about you";
+      usernameUpdate.placeholder = "You can choose a new username";
+    </script>
+  </body>
+</html>

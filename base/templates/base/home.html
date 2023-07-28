@@ -1,0 +1,83 @@
+{% extends 'main.html'%} {% block content %}
+<head>
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'styles/output.css' %}" />
+</head>
+<main class="w-full bg-darkest h-full">
+  <div
+    class="home-containers relative duration-1000 overflow-x-hidden flex justify-between"
+  >
+    <section class="home-el duration-500">
+      <div>
+        <p class="text-[14px] text-gray-400">
+          "{{q}}" is being discussed in
+          <span class="italic">{{room_count}}</span>
+          {% if room_count > 1 %}
+          <span>rooms</span>
+          {% else %}
+          <span> room</span>
+          {% endif %}
+        </p>
+        <div>{% include 'base/rooms.html' %}</div>
+      </div>
+    </section>
+    <section class="topic-el duration-500">
+      {% include 'base/topics.html' %}
+    </section>
+    <section class="trending-el duration-500">
+      {% include 'base/feeds.html' %}
+    </section>
+  </div>
+  <a
+    class="fixed bg-blue-500 h-16 w-16 bottom-16 rounded-full right-[5vw]"
+    href="{% url 'create-room' %}"
+    ><img
+      class="h-1/3 absolute top-1/2 left-1/2 -translate-x-1/2 invert -translate-y-1/2"
+      src="{% static 'images/plus.png' %}"
+      alt=""
+    />
+  </a>
+  <section
+    class="fixed py-4 bottom-0 bg-darkestTrans w-[100%] items-center justify-around flex"
+  >
+    <div id="home">Home</div>
+    <div id="topics">Topics</div>
+    <div id="trending">Trending</div>
+    <script>
+      let homeBtn = document.querySelector("#home");
+      let homeElement = document.querySelector(".home-el");
+      let topicElement = document.querySelector(".topic-el");
+      let trendingElement = document.querySelector(".trending-el");
+      let topicBtn = document.querySelector("#topics");
+      let trendingBtn = document.querySelector("#trending");
+      let homeContainer = document.querySelector(".home-containers");
+      let currentPosition = "home";
+
+      const handleHome = () => {
+        currentPosition = "home";
+        if (currentPosition == "home") {
+          homeElement.style.transform = "translateX(0px)";
+          topicElement.style.transform = "translateX(0px)";
+          trendingElement.style.transform = "translateX(0px)";
+        }
+      };
+      const handleTopic = () => {
+        currentPosition = "topic";
+        if (currentPosition == "topic") {
+          homeElement.style.transform = "translateX(-95vw)";
+          topicElement.style.transform = "translateX(-95vw)";
+          trendingElement.style.transform = "translateX(-95vw)";
+        }
+      };
+      const handleTrending = () => {
+        homeElement.style.transform = "translateX(-185vw)";
+        topicElement.style.transform = "translateX(-188vw)";
+        trendingElement.style.transform = "translateX(-185vw)";
+      };
+      homeBtn.addEventListener("click", handleHome);
+      topicBtn.addEventListener("click", handleTopic);
+      trendingBtn.addEventListener("click", handleTrending);
+    </script>
+  </section>
+</main>
+{% endblock content %}

@@ -1,0 +1,43 @@
+{% extends 'main.html' %} {% block content %} {% load static %}
+<img class="w-full border-8" src="{{user.avatar.url}}" alt="" />
+<section class="flex flex-col gap-4">
+  <div>
+    <p class="text-light mt-14 font-bold">Username</p>
+    <h1>@{{user.username}}</h1>
+  </div>
+  <div>
+    <p class="text-light font-bold">Email</p>
+    <h1>{{user.email}}</h1>
+  </div>
+  <div>
+    <p class="text-light font-bold">Name</p>
+    <h1>{{user.name}}</h1>
+  </div>
+  <div>
+    <p class="text-light font-bold">Bio</p>
+    <p>{{user.bio}}</p>
+  </div>
+</section>
+{% if request.user == user %}
+
+<!-- <a href="{% url 'update-user' %}">Edit Profile</a> -->
+<a
+  class="flex gap-2 my-12 items-center w-[150px]"
+  href="{% url 'update-user' %}"
+>
+  <img
+    class="h-6 invert-[100%]"
+    src="{% static 'images/setting.png' %}"
+    alt=""
+  />
+  <p class="text-xl">Edit Profile</p>
+</a>
+
+{% endif %}
+<section class="">
+  <p class="mb-4 mt-24 font-semibold text-xl">User posts</p>
+  {% include 'base/rooms.html' %}
+</section>
+<p></p>
+
+{% include 'base/profile-feeds.html' %} {% endblock content %}

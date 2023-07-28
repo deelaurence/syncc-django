@@ -1,0 +1,91 @@
+{% extends 'main.html' %} {% block content %}
+<div>
+  <form method="POST" action="">
+    {% csrf_token %}
+    <div class="flex flex-col gap-4">
+      <input
+        class="px-3 submit py-1 rounded-2xl bg-blue-400 self-end"
+        type="submit"
+        value="Submit"
+      />
+      <div>
+        <!-- <label
+          class="border-2 text-blue-400 border-blue-400 rounded-none py-1 px-3"
+          for="room_topic"
+          >Topic</label
+        > -->
+        <input
+          class="border-b-2 topic focus:border-blue-400 focus:outline-none placeholder-blue-400 text-blue-400 bg-transparent border-blue-400 rounded-none py-1 px-3 w-full"
+          required
+          autocomplete="off"
+          placeholder="Choose existing topic or Type new"
+          type="text"
+          name="topic"
+          value="{{room.topic}}"
+          list="topic_list"
+        />
+        <datalist id="topic_list">
+          <select name="" id="room_topic">
+            {% for topic in topics %}
+            <option value="{{topic.name}}">{{topic.name}}</option>
+            {% endfor %}
+          </select>
+        </datalist>
+      </div>
+
+      <div>
+        <!-- <label for="name">Name</label> -->
+
+        <input
+          type="text"
+          class="border-b-2 title focus:outline-none focus:bg-transparent text-blue-400 placeholder-blue-400 bg-transparent border-blue-400 rounded-none py-1 px-3 w-full"
+          placeholder="Room title"
+          name="name"
+          id="name"
+          value="{{room.name}}"
+        />
+      </div>
+      <!-- <label for="description">Description</label> -->
+
+      <textarea
+        class="text-white description focus:outline-none bg-transparent border-blue-400 rounded-none py-1 px-3 w-full"
+        name="description"
+        placeholder="What's happening?"
+        id="description"
+        rows="10"
+      >
+{{room.description}}</textarea
+      >
+    </div>
+
+    <script>
+      let submit = document.querySelector(".submit");
+      let topic = document.querySelector(".topic");
+      let title = document.querySelector(".title");
+      let description = document.querySelector(".description");
+      const checkEmptyField = () => {
+        console.log("called");
+        if (topic.value == "" || title.value == "" || description.value == "") {
+          submit.style.backgroundColor = "#22303c";
+          submit.style.color = "rgba(255,255,255,0.2)";
+        } else {
+          submit.style.backgroundColor = "rgba(96,165,250)";
+          submit.style.color = "rgba(255,255,255)";
+        }
+      };
+
+      checkEmptyField();
+
+      title.addEventListener("input", () => {
+        checkEmptyField();
+      });
+      topic.addEventListener("input", () => {
+        checkEmptyField();
+      });
+      description.addEventListener("input", () => {
+        checkEmptyField();
+      });
+    </script>
+    {% endblock content%}
+  </form>
+</div>

@@ -1,0 +1,43 @@
+<h3 class="my-4 text-xl">Trending now</h3>
+<div class="w-[90vw] px">
+  {% for feed in feeds_list %}
+
+  <div class="flex items-center text-light gap-2 mt-4">
+    <section
+      class="h-[32px] border-2 border-white w-[32px] mt-2 overflow-hidden rounded-full"
+    >
+      <img
+        class="h-full w-full object-cover"
+        src="{{feed.feed.user.avatar.url}}"
+        alt=""
+      />
+    </section>
+    <a class="" href="{% url 'profile' feed.feed.user_id %}">
+      @{{feed.feed.user.username}}
+      <span class="time-since font-semibold text-xs"
+        >{{feed.feed.created|timesince}} ago</span
+      >
+    </a>
+  </div>
+  <small
+    >Replied in
+    <a class="text-blue-300" href="{% url 'room' feed.room_id %}"
+      >"{{feed.feed.room}}"</a
+    ></small
+  >
+  <p class="text-xl border-l-6 mb-6 mt-2 border-l-white">
+    * {{feed.feed.body}}
+  </p>
+
+  {%endfor%}
+  <script>
+    let timeStamp2 = document.querySelectorAll(".time-since");
+    timeStamp2.forEach((element) => {
+      let time = element.textContent.trim().split(",")[0];
+      let number = parseInt(time);
+      let string = time.replace(/\d+/g, "").trim().substring(0, 1);
+      editedTime = number + string;
+      element.textContent = editedTime + " ago";
+    });
+  </script>
+</div>

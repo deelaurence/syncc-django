@@ -1,0 +1,51 @@
+{% load static %}
+<div class="w-[90vw]">
+  <h3 class="text-white mb-4 font-semibold">Browse Topics</h3>
+  <div
+    class="bg-yellow-600 flex rounded-xl justify-between pl-2 pr-6 py-6 mb-6"
+  >
+    <a class="flex gap-3 justify items-center" href="{% url 'home' %}"
+      ><span
+        class="gap-4 mr-4 p-2 border-white border-[4px] inline-block text-center font-semibold text-xl"
+        >All</span
+      >
+
+      <span class="text-white">{{all_rooms}} Topics Available</span>
+    </a>
+    <img
+      class="h-12 invert"
+      src="{% static 'images/impression.png' %}"
+      alt=""
+    />
+  </div>
+  {% for topic in topics %}
+  <div
+    class="bg-dark rounded-xl pr-4 flex gap-3 justify-between items-center pl-2 py-6 mb-6"
+  >
+    <a href="{% url 'home' %}?q={{topic.name}}">
+      <span
+        class="rounded-full p-2 h-8 text-xl inline-block text-center font-semibold bg-dark"
+        >{{topic.name}}</span
+      >
+      <span class="text-white topic-length">{{topic.length}}</span>
+    </a>
+    <img
+      class="h-6 self-end opacity-[0.15]"
+      src="{% static 'images/reddit.png' %}"
+      alt=""
+    />
+  </div>
+  {%endfor%}
+  <script>
+    let topicLength = document.querySelectorAll(".topic-length");
+    topicLength.forEach((element) => {
+      let text;
+      // console.log(element);
+      if (element.textContent > 1) {
+        element.textContent = element.textContent + " Topics Available";
+      } else {
+        element.textContent = element.textContent + " Topic Available";
+      }
+    });
+  </script>
+</div>

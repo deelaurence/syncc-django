@@ -1,0 +1,114 @@
+<!-- <head>
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'styles/output.css' %}" />
+  <link rel="stylesheet" href="{% static 'styles/custom.css' %}" />
+</head> -->
+
+<div class="flex relative pt-6 items-center justify-between">
+  <a href="{% url 'home' %}">
+    <img class="w-16" src="{% static 'images/reddit.png' %}" alt="" />
+  </a>
+  <nav class="overflow-hidden text-3xl">Syncc.</nav>
+  <!-- <p>Join hands....</p> -->
+  <div>
+    {% if request.user.is_authenticated %}
+    <div class="flex gap-1 items-center">
+      <div class="flex gap-2 dp flex-col items-center">
+        <div class="border-2 border-white w-8 h-8 rounded-full overflow-hidden">
+          <img
+            class="object-cover h-full"
+            src="{{request.user.avatar.url}}"
+            alt=""
+          />
+        </div>
+        <img
+          class="invert-[80%] duration-500 open h-4"
+          src="{% static 'images/arrow.png' %}"
+          alt=""
+        />
+      </div>
+    </div>
+    <div
+      class="auth-bar flex flex-col gap-4 p-4 duration-1000 z-40 right-0 absolute top-[-200px] bg-dark border-b-gray-600 border-b-4"
+    >
+      <p
+        class="capitalize pb-1 bg-darkest p-1 font-semibold text-xl text-neutral-200 border-b-neutral-500"
+      >
+        {{request.user.username}}
+      </p>
+      <a
+        class="flex gap-2 items-center justify-between"
+        href="{% url 'logout' %}"
+      >
+        <img
+          class="h-4 invert-[50%]"
+          src="{% static 'images/logout.png' %}"
+          alt=""
+        />
+        <p>Logout</p>
+      </a>
+      <a
+        class="flex gap-2 items-center justify-between"
+        href="{% url 'update-user' %}"
+      >
+        <img
+          class="h-4 invert-[100%]"
+          src="{% static 'images/setting.png' %}"
+          alt=""
+        />
+        <p>Profile</p>
+      </a>
+
+      <img
+        class="w-3 close mt-4 rotate-180 duration-500 self-center invert-[100%]"
+        src="{% static 'images/arrow.png' %}"
+        alt=""
+      />
+    </div>
+    {% else %}
+    <a href="{% url 'auth' %}">Login</a>
+    {% endif %}
+  </div>
+</div>
+<div class="my-6">
+  <form class="relative" action="" method="get">
+    <input
+      class="bg-dark relative w-full pl-10 rounded-[50px] p-2"
+      type="text"
+      name="q"
+      placeholder="Search"
+      value=""
+    />
+
+    <img
+      class="h-4 top-3 invert-[50%] left-4 absolute"
+      src="{% static 'images/search.png' %}"
+      alt=""
+    />
+  </form>
+  <script>
+    let authBar = document.querySelector(".auth-bar");
+    let dp = document.querySelector(".dp");
+    let closeBtn = document.querySelector(".close");
+    let openBtn = document.querySelector(".open");
+
+    if (dp) {
+      dp.addEventListener("click", () => {
+        setTimeout(() => {
+          authBar.style.top = "0";
+        }, 500);
+
+        openBtn.style.transform = "rotate(180deg)";
+        closeBtn.style.transform = "rotate(180deg)";
+      });
+
+      closeBtn.addEventListener("click", () => {
+        setTimeout(() => {
+          authBar.style.top = "-200px";
+        }, 500);
+        openBtn.style.transform = "rotate(0deg)";
+        closeBtn.style.transform = "rotate(0deg)";
+      });
+    }
+  </script>
+</div>

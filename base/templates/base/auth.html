@@ -1,0 +1,109 @@
+{% extends 'main.html' %} {% block content %}
+<head>
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'styles/output.css' %}" />
+</head>
+{% if page == 'login' %}
+<div class="">
+  <!-- <h1 class="text-2xl font-semibold text-center">Login</h1> -->
+  <form class="flex gap-2 text-left mt-12 flex-col" method="post">
+    {% csrf_token %}
+    <input
+      class="px-3 my-4 submit-login py-1 rounded-2xl bg-blue-400 self-end"
+      type="submit"
+      value="Submit"
+    />
+    <input
+      class="border-b-2 email-login focus:border-blue-400 focus:outline-none placeholder-blue-400 text-blue-400 bg-transparent border-blue-400 rounded-none py-1 px-3 w-full"
+      type="text"
+      autocomplete="off"
+      name="email"
+      placeholder="Enter your email.."
+      id=""
+    />
+
+    <input
+      class="border-b-2 password-login focus:border-blue-400 focus:outline-none placeholder-blue-400 text-blue-400 bg-transparent border-blue-400 rounded-none py-1 px-3 w-full"
+      type="password"
+      name="password"
+      placeholder="Enter your passsword"
+      id=""
+    />
+    <p class="mt-4 text-center bg-red-600 error-message">{{message}}</p>
+  </form>
+  <p class="text-light mt-6 mb-2 text-center">New User?</p>
+  <a
+    class="ml-[50%] font-semibold block -translate-x-1/2 text-center"
+    href="{% url 'register' %}"
+    >Sign Up instead</a
+  >
+</div>
+<script>
+  let submit = document.querySelector(".submit-login");
+  let email = document.querySelector(".email-login");
+  let password = document.querySelector(".password-login");
+  let errorMessage = document.querySelector(".error-message");
+  // let description = document.querySelector(".description");
+  const checkEmptyField = () => {
+    console.log("called");
+    if (email.value == "" || password.value == "") {
+      submit.style.backgroundColor = "#22303c";
+      submit.style.color = "rgba(255,255,255,0.2)";
+    } else {
+      submit.style.backgroundColor = "rgba(96,165,250)";
+      submit.style.color = "rgba(255,255,255)";
+    }
+  };
+  checkEmptyField();
+
+  // const addPadding = () => {
+
+  console.log(errorMessage.innerHtml);
+  if (errorMessage.innerHTML) {
+    errorMessage.style.paddingTop = "4px";
+    errorMessage.style.paddingBottom = "4px";
+    console.log("adding padding");
+  }
+  // }
+
+  email.addEventListener("input", () => {
+    checkEmptyField();
+  });
+  password.addEventListener("input", () => {
+    checkEmptyField();
+  });
+</script>
+{% else %}
+<div class="">
+  <h3>Excited to have you!!</h3>
+  <form class="flex gap-2 register-form text-left mt-8 flex-col" method="post">
+    {% csrf_token %} {{form.as_p}}
+
+    <p>{{message}}</p>
+    <input
+      class="ml-[50%] font-semibold block -translate-x-1/2 w-24 border px-5 py-2 rounded-3xl"
+      type="submit"
+      value="Submit"
+    />
+  </form>
+  <p class="text-light mt-6 mb-2 text-center">Already signed up?</p>
+  <a
+    class="ml-[50%] font-semibold block -translate-x-1/2 text-center"
+    href="{% url 'auth' %}"
+    >Log in</a
+  >
+  <script>
+    const name = document.getElementById("id_name");
+    const regEmail = document.getElementById("id_email");
+    const username = document.getElementById("id_username");
+    const pass1 = document.getElementById("id_password1");
+    const pass2 = document.getElementById("id_password2");
+    name.placeholder = "Enter your Fullname";
+    regEmail.placeholder = "Enter your email";
+    username.placeholder = "Enter your username";
+    pass1.placeholder = "Not less than 8 characters";
+    pass2.placeholder = "Confirm your password";
+  </script>
+</div>
+
+{% endif %} {% endblock %}

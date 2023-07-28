@@ -1,0 +1,15 @@
+<div class="bg-darker p-2">
+  <h3 class="font-semibold text-xl">User activicties</h3>
+  {% for feed in feeds %}
+  <div class="my-4">
+    <p>
+      <span class="text-light">{{feed.created|timesince}} ago</span>
+    </p>
+    <small class="italic"
+      >replied in "
+      <a href="{% url 'room' feed.room_id %}">{{feed.room}}</a> "</small
+    >
+    <p>*{{feed.body}}</p>
+  </div>
+  {%endfor%}
+</div>
