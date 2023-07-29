@@ -7,6 +7,9 @@
     
 }
 
+
+
+
 html{
     overflow-x: hidden;
     /* max-width: 100vw; */
@@ -84,4 +87,15 @@ margin-bottom: 4px;
 
 #id_bio{
     height: 150px;
+}
+
+
+input:-webkit-autofil,
+input:-webkit-autofil:focus{
+    transition: background-color 600000s 0s, color 600000s 0s !important
+
+}
+
+input[data-autocompleted]{
+    background-color: transparent !important;
 }
