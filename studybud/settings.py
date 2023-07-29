@@ -93,10 +93,10 @@ env = environ.Env()
 environ.Env.read_env()
 SECRET_KEY = env("SECRET_KEY")
 
-if db_config:
-    # heroku/railway - production
-    DATABASES = {}
-    DATABASES['default'] =  db_config
+import os
+
+if not DEBUG:
+    DATABASES = {'default': dj_database_url.parse(os.environ.get(env("REMOTE_DB")))}
 else:
     DATABASES = {
 
