@@ -1,0 +1,101 @@
+*{
+    /* outline: solid 1px red; */
+    /* max-width: 90vw !important; */
+    /* overflow-x: hidden; */
+    /* flex-wrap: wrap; */
+    /* text-align: justify; */
+    
+}
+
+
+
+
+html{
+    overflow-x: hidden;
+    /* max-width: 100vw; */
+}
+.register-form>ul{
+    display: none;
+}
+.register-form>p{
+    display: flex;
+    margin-bottom: 8px;
+    flex-direction: column;
+}
+.register-form>p>input{
+/* color: rgb(96,165,250); */
+background: transparent;
+border-bottom: 1px solid rgb(138, 139, 139);
+}
+.register-form>p>input:focus{
+/* color: rgb(96,165,250); */
+/* background: transparent; */
+outline: none;
+/* border-bottom: 1px solid rgb(138, 139, 139); */
+}
+.register-form>p>label{
+color: rgb(196, 196, 196);
+margin-bottom: 4px;
+}
+
+.helptext{
+    display: none;
+}
+.errorlist{
+    font-size: 14px;
+    color: rgb(255, 96, 38);
+    display:inline !important;
+}
+
+/* user update form */
+
+
+#id_username, #id_bio, #id_avatar{
+    background: transparent;
+    color: rgb(59, 130, 246);
+    margin-top:15px;
+    margin-bottom:15px;
+    width: 100%;
+    padding-bottom: 8px;
+
+    /* border-bottom: 1px solid rgba(59, 130, 246,0.5); */
+}
+
+#id_username:focus,
+#id_bio:focus,
+#id_avatar:focus{
+    outline: none;
+}
+#id_avatar{
+    position: absolute;
+    top: 50px;
+    z-index: 10;
+    right:0px;
+    width: 100%;
+    opacity: 0;
+    height: 10%;
+    background:rgba(21, 32, 43, 0.9) ;
+}
+.add-image{
+    position: absolute;
+    top: 50px;
+    right:0px;
+    /* width: 100%; */
+    /* height: 10%; */
+    /* background:rgba(21, 32, 43, 0.9) ; */
+}
+
+#id_bio{
+    height: 150px;
+}
+
+
+input:-webkit-autofil,
+input:-webkit-autofil:focus{
+    transition: background-color 600000s 0s, color 600000s 0s !important
+
+}
+
+input[data-autocompleted]{
+    background-color: transparent !important;
+}
