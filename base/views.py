@@ -1,12 +1,15 @@
 from django.shortcuts import render, redirect
 from .models import Room, Topic, Message, User
-from django.http import HttpResponse
- 
+from django.http import HttpResponse, JsonResponse
+import cloudinary
+import cloudinary.uploader
+
+
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from .forms import RoomForm, UserForm, MyUserCreationForm
-from django.db.models import Q
+from django.db.models import Q,F
 # Create your views here.
 
  
@@ -15,6 +18,14 @@ from django.db.models import Q
 def home(request): 
     q = request.GET.get('q')
     all_rooms = Room.objects.all()
+    prefetc=Room.objects.prefetch_related('message')
+
+
+    
+    # print(prefetc.values_list('messages'))
+    # print(all_rooms.values_list('host.name', flat=True))
+
+
     rooms=None
     if q != None:
         # messages_feeds = Message.objects.filter(Q(body__icontains=q)).values_list('room')
@@ -76,13 +87,43 @@ def home(request):
         room = Room.objects.get(name=feed.room)
         room_id = room.id
         feeds_list.append({'room_id':room_id,'feed':feed})
+    messages_length=[]
+    for room in rooms:
+        messages = room.message_set.all().order_by('-created')
+        # print(len(messages))
+        messages_length.append(len(messages))
+        # for message in messages:
+        #     print(len(message))
+    # for room in rooms:
+    #     room.annotate(custom=42)
+    #     print(room.custom)
+    likers_list=[]
+    for room in rooms:
+        likers=room.likedBy.values('id')
+        refined_list= [item["id"] for item in list(likers)]
+        likers_list.append(refined_list)
+        
+    print(list(likers_list))
+    print(likers_list)
+
+    rooms = list(rooms)
+    for i, room in enumerate(rooms):
+        if i < len(messages_length):
+            setattr(room, 'comments', messages_length[i])
+    # 
+    for i, room in enumerate(rooms):
+        if i < len(likers_list):
+            setattr(room, 'likers', likers_list[i])
+       
+
     context = {
         'rooms':rooms,
         'topics':topics_list, 
         'all_rooms':len(all_rooms),
         'q':q2,
         'room_count':len(rooms),
-        'feeds_list':feeds_list
+        'feeds_list':feeds_list,
+        'comments':messages_length
         }
     return render(request,'base/home.html',context)
 
@@ -208,18 +249,23 @@ def user_register(request):
     form = MyUserCreationForm()
     message = ""
     if request.method == 'POST':
-        form = MyUserCreationForm(request.POST)
-        if form.is_valid():
-            user=form.save(commit=False)
-            user.username= user.username.lower()
-            user.save()
-            login(request,user)
-            return redirect('home')
-        else:
+        try:
+            form = MyUserCreationForm(request.POST)
+            if form.is_valid():
+                user=form.save(commit=False)
+                user.username= user.username.lower()
+                user.save()
+                login(request,user)
+                return redirect('home')
+            else:
+                message= "Error occured during registration"
+        except:
             message= "Error occured during registration"
+
     page='register'
     context={'form':form, 'message':message}
     return render(request,'base/auth.html',context)
+
 
 
 
@@ -261,4 +307,59 @@ def updateUser(request):
             form.save()
             return redirect('profile', pk=user.id )
 
-    return render(request, 'base/update-user.html',{'form':form})
+    return render(request, 'base/update-user-old.html',{'form':form})
+
+
+
+# @login_required(login_url='login')
+def likes(request):
+    print("calling likes")
+    if request.method == 'POST':
+        import json
+        data=json.loads(request.body.decode("utf-8"))
+        room=data['room']
+        user_id=data['userId']
+        fetch_room = Room.objects.get(id=room)
+        user= User.objects.get(id=user_id)
+        # fetch_room.likes.add(user_id)
+        
+        fetch_room.save()
+        fetch_room.likedBy.add(user)
+        rooms= Room.objects.all()
+        likers=fetch_room.likedBy.all()
+        fetch_room.likes=likers.count()
+        fetch_room.save()
+        likers_list =[]
+        for liker in likers:
+            likers_list.append(liker.id)
+
+        print(likers_list)
+
+        
+    return JsonResponse({'likers':likers_list})
+
+def unlikes(request):
+    print("calling unlikes")
+    if request.method == 'POST':
+        import json
+        data=json.loads(request.body.decode("utf-8"))
+        room=data['room']
+        user_id=data['userId']
+        fetch_room = Room.objects.get(id=room)
+        user= User.objects.get(id=user_id)
+        # fetch_room.likes.add(user_id)
+        
+        fetch_room.save()
+        fetch_room.likedBy.remove(user)
+        rooms= Room.objects.all()
+        likers=fetch_room.likedBy.all()
+        fetch_room.likes=likers.count()
+        fetch_room.save()
+        likers_list =[]
+        for liker in likers:
+            likers_list.append(liker.id)
+
+        print(likers_list)
+
+        
+    return JsonResponse({'likers':likers_list})

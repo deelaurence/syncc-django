@@ -95,27 +95,14 @@ environ.Env.read_env()
 SECRET_KEY = env("SECRET_KEY")
 DATABASE_URL=env("DATABASE_URL")
 
-print(DATABASE_URL)
+
 
 import os
 
 DATABASES = {
     'default': env.db(),
 }
-# if not DEBUG:
-#     DATABASES = {'default': dj_database_url.parse(os.environ.get(DATABASE_URL))}
-# else:
-#     DATABASES = {
 
-#         'default': {
-#             'ENGINE': 'django.db.backends.postgresql_psycopg2',
-#             'NAME': env("DB_NAME"),
-#             'USER': env("DB_USER"),
-#             'PASSWORD': env("DB_PASSWORD"),
-#             'HOST': env("DB_HOST"),
-#             'PORT': env("DB_PORT"),
-#         }
-#     }
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 
@@ -159,6 +146,26 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'static', 'images')
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
+
+CLOUD_NAME=env("CLOUD_NAME")
+API_KEY=env("API_KEY")
+API_SECRET=env("API_SECRET")
+
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': CLOUD_NAME,
+    'API_KEY': API_KEY,
+    'API_SECRET':API_SECRET,
+}
+import cloudinary
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+cloudinary.config(
+cloud_name = CLOUD_NAME,
+api_key = API_KEY,
+api_secret = API_SECRET,
+)
+
+import cloudinary.uploader
+import cloudinary.api
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field

@@ -15,7 +15,7 @@
       </section>
       <section class="flex flex-col gap-2 w-[95%]">
         <h5 class="flex items-center gap-2">
-          <span
+          <span class="max-w-[33%]"
             ><a
               class="capitalize font-semibold"
               href="{% url 'profile' room.host.id %}"
@@ -76,35 +76,57 @@
     <section class="flex justify-around">
       <div class="flex gap-2 text-light items-center">
         <img
-          class="h-4 invert"
+          class="h-4 invert likes-image"
           src="{% static 'images/heart.png' %}"
-          alt=""
+          alt="{{room.likers}}"
           srcset=""
+          id="{{room.id}}"
         />
-        <p>12</p>
+        <p id="{{request.user.id}}" class="likes-number">{{room.likes}}</p>
       </div>
-      <div class="flex gap-2 text-light items-center">
+      <a
+        href="{% url 'room' room.id %}"
+        class="flex gap-2 text-light items-center"
+      >
         <img
           class="h-4 invert"
           src="{% static 'images/comment.png' %}"
           alt=""
           srcset=""
         />
-        <p>14</p>
-      </div>
+        <p>{{room.comments}}</p>
+      </a>
       <div class="flex gap-2 text-light items-center">
         <img
           class="h-6 invert"
           src="{% static 'images/impression.png' %}"
-          alt=""
+          alt="{{room.likers}}"
           srcset=""
         />
-        <p>1.3k</p>
+        {% with impression=room.comments|add:room.likes %}
+        <p>{{impression}}</p>
+        {% endwith %}
       </div>
     </section>
     {%endfor%}
   </div>
   <script>
+    function getCookie(name) {
+      let cookieValue = null;
+      if (document.cookie && document.cookie !== "") {
+        const cookies = document.cookie.split(";");
+        for (let i = 0; i < cookies.length; i++) {
+          const cookie = cookies[i].trim();
+          if (cookie.startsWith(`${name}=`)) {
+            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+            break;
+          }
+        }
+      }
+      return cookieValue;
+    }
+
+    //Refactor Post Time UI
     let timeStamp = document.querySelectorAll(".time-since");
     timeStamp.forEach((element) => {
       let time = element.textContent.trim().split(",")[0];
@@ -114,6 +136,7 @@
       element.textContent = editedTime;
     });
 
+    //Truncate long room descriptions
     let roomDescription = document.querySelectorAll(".room-description");
     let showMore = document.querySelectorAll(".show-more");
     roomDescription.forEach((element, index) => {
@@ -129,6 +152,109 @@
         });
         element.firstChild.textContent = description.substring(0, 100) + "...";
       }
+    });
+
+    //When user likes a post
+    let likesNumber = document.querySelectorAll(".likes-number");
+    let likesImage = document.querySelectorAll(".likes-image");
+    const userId = document.querySelector(".likes-number").id;
+    likesImage.forEach((image, imageIndex) => {
+      const likers = JSON.parse(image.alt);
+      console.log(likers);
+      console.log(likers.includes(Number(userId)));
+      if (likers.includes(Number(userId))) {
+        image.src = "static/images/heart-fill.png";
+        image.style.filter = "none";
+      }
+      image.addEventListener("click", async () => {
+        //check if user has liked post before
+        //if user has liked post, UNLIKE IT.
+        console.log(image.src);
+        if (image.src.includes("static/images/heart-fill.png")) {
+          console.log("User already liked");
+          likesNumber.forEach((number, numberIndex) => {
+            if (imageIndex == numberIndex) {
+              let enumbered = Number(number.textContent) - 1;
+              console.log(enumbered);
+              number.textContent = enumbered;
+            }
+          });
+          image.src = "static/images/heart.png";
+          image.style.filter = "invert(100%)";
+          try {
+            const response = await fetch("/unlikes", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": getCookie("csrftoken"), // Ensure you include the CSRF token for security
+              },
+              body: JSON.stringify({
+                room: image.id,
+                userId: userId,
+                /* your_data_to_send */
+              }), // Replace this with the data you want to send to the server
+            });
+
+            if (!response.ok) {
+              throw new Error("Request failed"); // Handle error responses, if any
+            }
+
+            const result = await response.json(); // Process the response from the server, if needed
+            console.log(result); // Log the result for debugging or feedback
+
+            // Update the DOM if necessary
+            // For example, you can update a specific element's content based on the result
+            // document.getElementById('result-element').textContent = result.message;
+          } catch (error) {
+            console.error("Error:", error);
+          }
+          return;
+        }
+
+        //change the number on the client side at least
+        //before the server gets updated
+        likesNumber.forEach((number, numberIndex) => {
+          // console.log(imageIndex, numberIndex);
+          if (imageIndex == numberIndex) {
+            // console.log(typeof number.textContent);
+            let enumbered = Number(number.textContent) + 1;
+            number.textContent = enumbered;
+          }
+        });
+
+        image.src = "static/images/heart-fill.png";
+        image.style.filter = "none";
+
+        try {
+          const response = await fetch("/likes", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "X-CSRFToken": getCookie("csrftoken"), // Ensure you include the CSRF token for security
+            },
+            body: JSON.stringify({
+              room: image.id,
+              userId: userId,
+              /* your_data_to_send */
+            }), // Replace this with the data you want to send to the server
+          });
+
+          if (!response.ok) {
+            throw new Error("Request failed"); // Handle error responses, if any
+          }
+
+          const result = await response.json(); // Process the response from the server, if needed
+          console.log(result); // Log the result for debugging or feedback
+
+          // Update the DOM if necessary
+          // For example, you can update a specific element's content based on the result
+          // document.getElementById('result-element').textContent = result.message;
+        } catch (error) {
+          console.error("Error:", error);
+        }
+      });
+
+      // Function to get the CSRF token from the cookie
     });
   </script>
 </div>
