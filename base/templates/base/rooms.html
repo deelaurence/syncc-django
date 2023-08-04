@@ -159,6 +159,7 @@
     let likesImage = document.querySelectorAll(".likes-image");
     const userId = document.querySelector(".likes-number").id;
     likesImage.forEach((image, imageIndex) => {
+      console.log("userid :" + userId);
       const likers = JSON.parse(image.alt);
       console.log(likers);
       console.log(likers.includes(Number(userId)));
@@ -167,6 +168,11 @@
         image.style.filter = "none";
       }
       image.addEventListener("click", async () => {
+        //check if user is logged in
+        if (userId == "None") {
+          return (window.location.href = window.location.origin + "/auth");
+        }
+
         //check if user has liked post before
         //if user has liked post, UNLIKE IT.
         console.log(image.src);
