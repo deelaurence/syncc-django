@@ -32,7 +32,7 @@
       class="auth-bar flex flex-col gap-4 p-4 duration-700 z-40 right-0 absolute top-[-200px] bg-dark border-b-gray-600 border-b-4"
     >
       <p
-        class="capitalize pb-1 bg-darkest p-1 font-semibold text-xl text-neutral-200 border-b-neutral-500"
+        class="capitalize pb-1 font-mono p-1 text-xl text-neutral-200 border-b-neutral-500"
       >
         {{request.user.username}}
       </p>
@@ -102,7 +102,7 @@
         closeBtn.style.transform = "rotate(180deg)";
       });
 
-      closeBtn.addEventListener("click", () => {
+      authBar.addEventListener("click", () => {
         setTimeout(() => {
           authBar.style.top = "-200px";
         }, 500);
