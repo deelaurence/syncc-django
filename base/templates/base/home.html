@@ -38,7 +38,7 @@
     />
   </a>
   <section
-    class="fixed py-4 bottom-0 bg-darkestTrans w-[100%] items-center justify-around flex"
+    class="fixed py-4 bottom-0 bg-darkestTrans w-[90%] items-center justify-around flex"
   >
     <div id="home">Home</div>
     <div id="topics">Topics</div>
@@ -56,6 +56,9 @@
       const handleHome = () => {
         currentPosition = "home";
         if (currentPosition == "home") {
+          homeBtn.style.fontWeight = "700";
+          topicBtn.style.fontWeight = "300";
+          trendingBtn.style.fontWeight = "300";
           homeElement.style.transform = "translateX(0px)";
           topicElement.style.transform = "translateX(0px)";
           trendingElement.style.transform = "translateX(0px)";
@@ -64,12 +67,18 @@
       const handleTopic = () => {
         currentPosition = "topic";
         if (currentPosition == "topic") {
+          homeBtn.style.fontWeight = "300";
+          topicBtn.style.fontWeight = "700";
+          trendingBtn.style.fontWeight = "300";
           homeElement.style.transform = "translateX(-95vw)";
           topicElement.style.transform = "translateX(-95vw)";
           trendingElement.style.transform = "translateX(-95vw)";
         }
       };
       const handleTrending = () => {
+        homeBtn.style.fontWeight = "300";
+        topicBtn.style.fontWeight = "300";
+        trendingBtn.style.fontWeight = "700";
         homeElement.style.transform = "translateX(-185vw)";
         topicElement.style.transform = "translateX(-188vw)";
         trendingElement.style.transform = "translateX(-185vw)";

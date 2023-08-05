@@ -8,7 +8,11 @@
 }
 
 
-
+input{
+    border-radius: none !important;
+    border-radius: 0 !important;
+    border-radius: 0px !important;
+}
 
 html{
     overflow-x: hidden;
@@ -72,7 +76,7 @@ margin-bottom: 4px;
     z-index: 10;
     right:0px;
     width: 100%;
-    opacity: 0;
+    opacity: 0.5;
     height: 10%;
     background:rgba(21, 32, 43, 0.9) ;
 }
